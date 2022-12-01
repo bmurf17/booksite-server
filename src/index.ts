@@ -34,19 +34,19 @@ app.get("/book", async (req, res) => {
   res.json(rows);
 });
 
-// app.post("/book", (req, res) => {
-//   const { title, img, author, pageCount, genre, user, rating } = req.body;
-//   pool.query(
-//     "INSERT INTO book (title, img, author, pagecount, genre, rating) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-//     [title, img, author, pageCount, genre, rating],
-//     (error, results) => {
-//       if (error) {
-//         throw error;
-//       }
-//       res.status(201).send(`Book added with title: ${title}`);
-//     }
-//   );
-// });
+app.post("/book", (req, res) => {
+  const { title, img, author, pageCount, genre, user, rating } = req.body;
+  pool.query(
+    "INSERT INTO book (title, img, author, pagecount, genre, rating) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+    [title, img, author, pageCount, genre, rating],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.status(201).send(`Book added with title: ${title}`);
+    }
+  );
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
