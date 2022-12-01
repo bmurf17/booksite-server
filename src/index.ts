@@ -16,7 +16,6 @@ app.get("/", async (req, res) => {
 
 // app.put("/:id/book", (req, res) => {
 //   const id = req.params["id"];
-//   console.log(id);
 //   const { title, img, author, pageCount, genre, user, rating } = req.body;
 //   pool.query(
 //     "Update book SET title = $1, img = $2, author = $3, pagecount = $4, genre = $5, rating = $6 WHERE id = $7",
@@ -30,10 +29,10 @@ app.get("/", async (req, res) => {
 //   );
 // });
 
-// app.get("/book", async (req, res) => {
-//   const { rows } = await pool.query("SELECT * From book");
-//   res.json(rows);
-// });
+app.get("/book", async (req, res) => {
+  const { rows } = await pool.query("SELECT * From book");
+  res.json(rows);
+});
 
 // app.post("/book", (req, res) => {
 //   const { title, img, author, pageCount, genre, user, rating } = req.body;
