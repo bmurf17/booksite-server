@@ -1,4 +1,3 @@
-import bodyParser from "body-parser";
 import express from "express";
 import pg from "pg";
 
@@ -7,9 +6,9 @@ const pool = new pg.Pool();
 const app = express();
 const port = process.env.PORT || 3333;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
-app.use(bodyParser.text({ type: "text/html" }));
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.text({ type: "text/html" }));
 
 app.get("/", async (req, res) => {
   res.send("Hello world");
