@@ -14,7 +14,7 @@ app.get("/", async (req, res) => {
   res.send("Hello world");
 });
 
-app.put("/:id/book", (req, res) => {
+app.put("/book/:id", (req, res) => {
   const id = req.params["id"];
   const { title, img, author, pageCount, genre, user, rating } = req.body;
   pool.query(
