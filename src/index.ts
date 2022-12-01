@@ -14,20 +14,20 @@ app.get("/", async (req, res) => {
   res.send("Hello world");
 });
 
-// app.put("/:id/book", (req, res) => {
-//   const id = req.params["id"];
-//   const { title, img, author, pageCount, genre, user, rating } = req.body;
-//   pool.query(
-//     "Update book SET title = $1, img = $2, author = $3, pagecount = $4, genre = $5, rating = $6 WHERE id = $7",
-//     [title, img, author, pageCount, genre, rating, id],
-//     (error, results) => {
-//       if (error) {
-//         throw error;
-//       }
-//       res.status(201).send(`Updated Row with ID: ${id}`);
-//     }
-//   );
-// });
+app.put("/:id/book", (req, res) => {
+  const id = req.params["id"];
+  const { title, img, author, pageCount, genre, user, rating } = req.body;
+  pool.query(
+    "Update book SET title = $1, img = $2, author = $3, pagecount = $4, genre = $5, rating = $6 WHERE id = $7",
+    [title, img, author, pageCount, genre, rating, id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.status(201).send(`Updated Row with ID: ${id}`);
+    }
+  );
+});
 
 app.get("/book", async (req, res) => {
   const { rows } = await pool.query("SELECT * From book");
