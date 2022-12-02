@@ -22,6 +22,7 @@ app.get("/", async (req, res) => {
   res.send("Hello world");
 });
 
+//BOOK
 app.put("/book/:id", (req, res) => {
   const id = req.params["id"];
   const { title, img, author, pageCount, genre, user, rating } = req.body;
@@ -54,6 +55,18 @@ app.post("/book", (req, res) => {
       res.status(201).send(`Book added with title: ${title}`);
     }
   );
+});
+
+//AUTHOR
+app.get("/author", async (req, res) => {
+  const { rows } = await pool.query("SELECT * FROM author");
+  res.json(rows);
+});
+
+app.get("/author/:id", async (req, res) => {
+  const id = req.params["id"];
+  const { rows } = await pool.query(`SELECT * FROM author WHERE id = ${id}`);
+  res.json(rows);
 });
 
 app.listen(port, () => {
