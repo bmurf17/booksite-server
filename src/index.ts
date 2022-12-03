@@ -43,6 +43,15 @@ app.get("/book", async (req, res) => {
   res.json(rows);
 });
 
+app.get("/book/:id", async (req, res) => {
+  const id = req.params["id"];
+  res.json(
+    await (
+      await pool.query(`SELECT * From book WHERE id = ${id}`)
+    ).rows[0]
+  );
+});
+
 app.post("/book", (req, res) => {
   const { title, img, author, pageCount, genre, user, rating } = req.body;
   pool.query(
