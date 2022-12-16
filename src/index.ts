@@ -13,6 +13,9 @@ const pool = new pg.Pool();
 const app = express();
 const port = process.env.PORT || 3333;
 
+const authors = require("./author");
+const books = require("./book");
+
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.text({ type: "text/html" }));
@@ -23,60 +26,18 @@ app.get("/", async (req, res) => {
 });
 
 //BOOK
-app.put("/book/:id", (req, res) => {
-  const id = req.params["id"];
-  const { title, img, author, pageCount, genre, user, rating } = req.body;
-  pool.query(
-    "Update book SET title = $1, img = $2, author = $3, pagecount = $4, genre = $5, rating = $6 WHERE id = $7",
-    [title, img, author, pageCount, genre, rating, id],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      res.status(201).send(`Updated Row with ID: ${id}`);
-    }
-  );
-});
+app.put("/book/:id", books.updateBook);
 
-app.get("/book", async (req, res) => {
-  const { rows } = await pool.query("SELECT * From book");
-  res.json(rows);
-});
+app.get("/book", books.getAllBooks);
 
-app.get("/book/:id", async (req, res) => {
-  const id = req.params["id"];
-  res.json(
-    await (
-      await pool.query(`SELECT * From book WHERE id = ${id}`)
-    ).rows[0]
-  );
-});
+app.get("/book/:id", books.getBookByid);
 
-app.post("/book", (req, res) => {
-  const { title, img, author, pageCount, genre, user, rating } = req.body;
-  pool.query(
-    "INSERT INTO book (title, img, author, pagecount, genre, rating) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-    [title, img, author, pageCount, genre, rating],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      res.status(201).send(`Book added with title: ${title}`);
-    }
-  );
-});
+app.post("/book", books.addBook);
 
 //AUTHOR
-app.get("/author", async (req, res) => {
-  const { rows } = await pool.query("SELECT * FROM author");
-  res.json(rows);
-});
+app.get("/author", authors.getAllAuthors);
 
-app.get("/author/:id", async (req, res) => {
-  const id = req.params["id"];
-  const { rows } = await pool.query(`SELECT * FROM author WHERE id = ${id}`);
-  res.json(rows);
-});
+app.get("/author/:id", authors.getAuthorById);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
