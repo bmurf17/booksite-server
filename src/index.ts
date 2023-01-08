@@ -15,6 +15,7 @@ const port = process.env.PORT || 3333;
 
 const authors = require("./author");
 const books = require("./book");
+const user = require("./user");
 
 app.use(express.json());
 app.use(express.urlencoded());
@@ -38,6 +39,10 @@ app.post("/book", books.addBook);
 app.get("/author", authors.getAllAuthors);
 
 app.get("/author/:id", authors.getAuthorById);
+
+//USER
+app.get("/user/:id", user.getUserByid);
+app.post("/user/login", user.login);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
