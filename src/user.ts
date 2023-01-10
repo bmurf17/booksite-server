@@ -1,5 +1,6 @@
 import pg from "pg";
 const pool = new pg.Pool();
+const tableName = "site_user";
 
 const getUserByid = async (
   req: { params: { [x: string]: any } },
@@ -9,7 +10,7 @@ const getUserByid = async (
   console.log(id);
   res.json(
     await (
-      await pool.query(`SELECT * From site_user WHERE id = ${id}`)
+      await pool.query(`SELECT * From ${tableName} WHERE id = ${id}`)
     ).rows[0]
   );
 };
@@ -28,12 +29,11 @@ const login = async (
   const { name, dateCreated, img, uuid } = req.body;
 
   var { rows, rowCount } = await pool.query(
-    "SELECT * from site_user where uuid = $1",
+    `SELECT * from ${tableName} where uuid = $1`,
     [uuid]
   );
 
   if (rowCount >= 1) {
-    console.log("Here");
     res.json(rows[0]);
     return;
   }
@@ -41,7 +41,7 @@ const login = async (
   res.json(
     await (
       await pool.query(
-        "INSERT INTO site_user (name, img) VALUES ($1, $2) RETURNING *",
+        `INSERT INTO ${tableName} (name, img) VALUES ($1, $2) RETURNING *`,
         [name, img]
       )
     ).rows[0]
