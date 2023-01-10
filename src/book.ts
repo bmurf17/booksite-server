@@ -53,7 +53,7 @@ const getBookByid = async (
   );
 };
 
-const addBook = (
+const addBook = async (
   req: {
     body: {
       title: any;
@@ -74,9 +74,27 @@ const addBook = (
   }
 ) => {
   const { title, img, author, pageCount, genre, user, rating } = req.body;
+
+  var { rows, rowCount } = await pool.query(
+    `SELECT * from author where name = $1`,
+    [author]
+  );
+
+  var authorId;
+
+  if (rowCount == 0) {
+    var { rows } = await pool.query(
+      "INSERT INTO author (name) VALUES ($1) RETURNING *",
+      [author]
+    );
+    authorId = rows[0].id;
+  } else {
+    authorId = rows[0].id;
+  }
+
   pool.query(
     "INSERT INTO book (title, img, author, pagecount, genre, rating) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-    [title, img, author, pageCount, genre, rating],
+    [title, img, authorId, pageCount, genre, rating],
     (error, results) => {
       if (error) {
         throw error;
