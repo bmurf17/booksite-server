@@ -1,4 +1,6 @@
 import pg from "pg";
+const fetch = require('node-fetch')
+
 const pool = new pg.Pool();
 
 const updateBook = async (
@@ -17,8 +19,8 @@ const updateBook = async (
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      send: { (arg0: string): void; new (): any };
+      new(): any;
+      send: { (arg0: string): void; new(): any };
     };
   }
 ) => {
@@ -68,8 +70,8 @@ const addBook = async (
   res: {
     status: (arg0: number) => {
       (): any;
-      new (): any;
-      send: { (arg0: string): void; new (): any };
+      new(): any;
+      send: { (arg0: string): void; new(): any };
     };
   }
 ) => {
@@ -104,9 +106,28 @@ const addBook = async (
   );
 };
 
+const getBookFromGoogle = async (
+  req: { params: { [x: string]: any } },
+  res: { json: (arg0: any) => void }
+) => {
+  const title = req.params["title"];
+  console.log(title);
+
+  try {
+    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=" + encodeURIComponent(title) + "&fields=items(volumeInfo%2Fdescription,volumeInfo%2Ftitle,volumeInfo%2Fauthors,volumeInfo%2FpageCount,volumeInfo%2FimageLinks%2Fthumbnail,volumeInfo%2Fcategories)");
+    const data = await response.json();
+
+    console.log(data.items)
+  } catch (error) {
+    // Handle any errors that occurred during the request
+    console.error('Error:', error);
+  }
+};
+
 module.exports = {
   updateBook,
   getAllBooks,
   getBookByid,
   addBook,
+  getBookFromGoogle
 };

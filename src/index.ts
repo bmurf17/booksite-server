@@ -1,6 +1,5 @@
 import express from "express";
 import pg from "pg";
-
 const cors = require("cors");
 const corsOptions = {
   origin: "http://localhost:5173",
@@ -34,6 +33,8 @@ app.get("/book", books.getAllBooks);
 app.get("/book/:id", books.getBookByid);
 
 app.post("/book", books.addBook);
+
+app.get("/google/:title", books.getBookFromGoogle)
 
 //AUTHOR
 app.get("/author", authors.getAllAuthors);
