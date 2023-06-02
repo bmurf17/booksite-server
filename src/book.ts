@@ -106,18 +106,39 @@ const addBook = async (
   );
 };
 
+type ImageLinks = {
+  thumbnail: string;
+}
+
+type VolumeInfo = {
+  title: string;
+  authors: string[];
+  description: string;
+  pageCount: number;
+  categories: string[];
+  imageLinks: ImageLinks;
+}
+
+type GoogleBooksResponse = {
+  items: VolumeInfo[]
+}
+
 const getBookFromGoogle = async (
   req: { params: { [x: string]: any } },
-  res: { json: (arg0: any) => void }
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new(): any;
+      send: { (arg0: GoogleBooksResponse): void; new(): any };
+    };
+  }
 ) => {
   const title = req.params["title"];
-  console.log(title);
 
   try {
     const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=" + encodeURIComponent(title) + "&fields=items(volumeInfo%2Fdescription,volumeInfo%2Ftitle,volumeInfo%2Fauthors,volumeInfo%2FpageCount,volumeInfo%2FimageLinks%2Fthumbnail,volumeInfo%2Fcategories)");
-    const data = await response.json();
-
-    console.log(data.items)
+    const data: GoogleBooksResponse = await response.json();
+    res.status(201).send(data);
   } catch (error) {
     // Handle any errors that occurred during the request
     console.error('Error:', error);
