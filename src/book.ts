@@ -26,9 +26,27 @@ const updateBook = async (
 ) => {
   const id = req.params["id"];
   const { title, img, author, pageCount, genre, user, rating } = req.body;
+
+  var { rows, rowCount } = await pool.query(
+    `SELECT * from author where name = $1`,
+    [author]
+  );
+
+  var authorId;
+
+  if (rowCount == 0) {
+    var { rows } = await pool.query(
+      "INSERT INTO author (name) VALUES ($1) RETURNING *",
+      [author]
+    );
+    authorId = rows[0].id;
+  } else {
+    authorId = rows[0].id;
+  }
+
   pool.query(
     "Update book SET title = $1, img = $2, author = $3, pagecount = $4, genre = $5, rating = $6 WHERE id = $7",
-    [title, img, author, pageCount, genre, rating, id],
+    [title, img, authorId, pageCount, genre, rating, id],
     (error, results) => {
       if (error) {
         throw error;
@@ -108,6 +126,7 @@ const addBook = async (
 
 type ImageLinks = {
   thumbnail: string;
+  large: string;
 }
 
 type VolumeInfo = {
@@ -136,7 +155,11 @@ const getBookFromGoogle = async (
   const title = req.params["title"];
 
   try {
-    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=" + encodeURIComponent(title) + "&fields=items(volumeInfo%2Fdescription,volumeInfo%2Ftitle,volumeInfo%2Fauthors,volumeInfo%2FpageCount,volumeInfo%2FimageLinks%2Fthumbnail,volumeInfo%2Fcategories)");
+    var temp = "https://www.googleapis.com/books/v1/volumes?q=" + encodeURIComponent(title) + "&fields=items(volumeInfo%2Fdescription,volumeInfo%2Ftitle,volumeInfo%2Fauthors,volumeInfo%2FpageCount,volumeInfo%2FimageLinks%2Fthumbnail,volumeInfo%2FimageLinks%2Flarge,volumeInfo%2Fcategories)";
+    console.log(temp)
+    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=" + encodeURIComponent(title) + "&fields=items(volumeInfo%2Fdescription,volumeInfo%2Ftitle,volumeInfo%2Fauthors,volumeInfo%2FpageCount,volumeInfo%2FimageLinks%2Fthumbnail,volumeInfo%2FimageLinks%2Flarge,volumeInfo%2Fcategories)");
+
+
     const data: GoogleBooksResponse = await response.json();
     res.status(201).send(data);
   } catch (error) {
