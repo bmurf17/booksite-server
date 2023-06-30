@@ -2,7 +2,7 @@ import express from "express";
 import pg from "pg";
 const cors = require("cors");
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: ["http://localhost:5173", "https://booksite-2aa2a.web.app/"],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
