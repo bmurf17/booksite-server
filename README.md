@@ -31,3 +31,11 @@ to a Railway PostgreSQL database.
 
 The server started simply returns the current time in the database. The SQL
 query is located in `src/index.js`.
+
+## Queries for later
+
+### Get Book Counts By Month/Year
+
+SELECT date_trunc('month', dateread) AS txn_month, sum(pagecount) as monthly_sum
+FROM book
+GROUP BY txn_month
